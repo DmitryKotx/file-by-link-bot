@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-spring-boot-starter</artifactId>
-            <version>6.7.0</version>
+            <version>${telegrambot.starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
