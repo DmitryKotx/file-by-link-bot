@@ -1,4 +1,5 @@
 # Project exclude paths
 /dispatcher/target/
+/node/target/
 logs
 .idea
