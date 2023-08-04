@@ -1,22 +1,22 @@
 package ru.kotov.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.kotov.service.impl.UpdateProducerImpl;
+import ru.kotov.service.UpdateProducer;
 import ru.kotov.utils.MessageUtils;
 
 import static ru.kotov.RabbitQueue.*;
 
-@Slf4j
+@Log4j
 @Component
 public class UpdateController {
     private TelegramBot telegramBot;
     private final MessageUtils messageUtils;
-    private final UpdateProducerImpl updateProducer;
+    private final UpdateProducer updateProducer;
 
-    public UpdateController(MessageUtils messageUtils, UpdateProducerImpl updateProducer) {
+    public UpdateController(MessageUtils messageUtils, UpdateProducer updateProducer) {
         this.messageUtils = messageUtils;
         this.updateProducer = updateProducer;
     }
