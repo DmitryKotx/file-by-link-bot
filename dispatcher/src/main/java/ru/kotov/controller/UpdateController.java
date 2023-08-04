@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.kotov.service.UpdateProducer;
+import ru.kotov.service.UpdateProducerService;
 import ru.kotov.utils.MessageUtils;
 
 import static ru.kotov.RabbitQueue.*;
@@ -14,9 +14,9 @@ import static ru.kotov.RabbitQueue.*;
 public class UpdateController {
     private TelegramBot telegramBot;
     private final MessageUtils messageUtils;
-    private final UpdateProducer updateProducer;
+    private final UpdateProducerService updateProducer;
 
-    public UpdateController(MessageUtils messageUtils, UpdateProducer updateProducer) {
+    public UpdateController(MessageUtils messageUtils, UpdateProducerService updateProducer) {
         this.messageUtils = messageUtils;
         this.updateProducer = updateProducer;
     }
@@ -55,7 +55,7 @@ public class UpdateController {
         setView(sendMessage);
     }
 
-    private void setView(SendMessage sendMessage) {
+    public void setView(SendMessage sendMessage) {
         telegramBot.sendAnswerMessage(sendMessage);
     }
     private void setFileReceivedView(Update update) {
