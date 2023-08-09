@@ -3,8 +3,9 @@ package ru.kotov.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
 @Builder
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = "id")
 @AllArgsConstructor
 @NoArgsConstructor
