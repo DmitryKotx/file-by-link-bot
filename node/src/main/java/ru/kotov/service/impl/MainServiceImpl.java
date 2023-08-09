@@ -3,6 +3,7 @@ package ru.kotov.service.impl;
 import lombok.extern.log4j.Log4j;
 import ru.kotov.dao.AppUserDAO;
 import ru.kotov.entity.AppDocument;
+import ru.kotov.entity.AppPhoto;
 import ru.kotov.entity.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -85,8 +86,15 @@ public class MainServiceImpl implements MainService {
         if(isNotAllowToSendContent(chatId, appUser)) {
             return;
         }
-        var answer = "Фото успешно загружено! Ссылка для скачивания: *ссылка*";
-        setAnswer(answer, chatId);
+        try {
+            AppPhoto photo = fileService.processPhoto(update.getMessage());
+            var answer = "Фото успешно загружено! Ссылка для скачивания: *ссылка*";
+            setAnswer(answer, chatId);
+        } catch (UploadFileException ex) {
+            log.error(ex);
+            String error = "К сожалению, загрузка фото не удалась. Повторите попытку позже.";
+            setAnswer(error, chatId);
+        }
     }
 
     private boolean isNotAllowToSendContent(Long chatId, AppUser appUser) {
