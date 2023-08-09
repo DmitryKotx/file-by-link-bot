@@ -2,6 +2,7 @@ package ru.kotov.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import ru.kotov.dao.AppUserDAO;
+import ru.kotov.entity.AppDocument;
 import ru.kotov.entity.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,8 +11,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.kotov.dao.RawDataDAO;
 import ru.kotov.entity.RawData;
+import ru.kotov.exceptions.UploadFileException;
+import ru.kotov.service.FileService;
 import ru.kotov.service.MainService;
 import ru.kotov.service.ProducerService;
+import ru.kotov.service.enums.ServiceCommand;
 
 import static ru.kotov.entity.enums.UserState.BASIC_STATE;
 import static ru.kotov.entity.enums.UserState.WAIT_FOR_EMAIL_STATE;
@@ -24,6 +28,7 @@ public class MainServiceImpl implements MainService {
     private final RawDataDAO rawDataDAO;
     public final ProducerService producerService;
     private final AppUserDAO appUserDAO;
+    private final FileService fileService;
     @Override
     public void processTextMessage(Update update) {
         saveRawData(update);
@@ -32,7 +37,9 @@ public class MainServiceImpl implements MainService {
         var userState = appUser.getState();
         var text = update.getMessage().getText();
         var output = "";
-        if(CANCEL.equals(text)) {
+
+        var serviceCommand = ServiceCommand.fromValue(text);
+        if(CANCEL.equals(serviceCommand)) {
             output = cancelProcess(appUser);
         } else if(BASIC_STATE.equals(userState)) {
             output = processServiceCommand(appUser, text);
@@ -56,8 +63,16 @@ public class MainServiceImpl implements MainService {
         if(isNotAllowToSendContent(chatId, appUser)) {
             return;
         }
-        var answer = "Документ успешно загружен! Ссылка для скачивания: *ссылка*";
-        setAnswer(answer, chatId);
+        try {
+            AppDocument doc = fileService.processDoc(update.getMessage());
+            var answer = "Документ успешно загружен! Ссылка для скачивания: *ссылка*";
+            setAnswer(answer, chatId);
+        } catch (UploadFileException ex) {
+            log.error(ex);
+            String error = "К сожалению, загрузка файла не удалась. Повторите попытку позже.";
+            setAnswer(error, chatId);
+        }
+
     }
 
 
@@ -96,11 +111,12 @@ public class MainServiceImpl implements MainService {
     }
 
     private String processServiceCommand(AppUser appUser, String text) {
-        if(REGISTRATION.equals(text)) {
+        var serviceCommand = ServiceCommand.fromValue(text);
+        if(REGISTRATION.equals(serviceCommand)) {
             return "Временно недоступно";
-        } else if(HELP.equals(text)) {
+        } else if(HELP.equals(serviceCommand)) {
             return help();
-        } else if(START.equals(text)) {
+        } else if(START.equals(serviceCommand)) {
             return "Приветствую! Чтобы посмотреть список доступных команд введите /help";
         } else {
             return "Неизвестная команда! Чтобы посмотреть список доступных команд введите /help";

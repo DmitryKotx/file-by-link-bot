@@ -14,5 +14,5 @@ public class BinaryContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private byte[] fileAsArraysOfBytes;
+    private byte[] fileAsArrayOfBytes;
 }

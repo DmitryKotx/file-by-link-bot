@@ -17,7 +17,12 @@ public enum ServiceCommand {
         return value;
     }
 
-    public boolean equals (String value) {
-        return this.toString().equals(value);
+    public static ServiceCommand fromValue(String v) {
+        for (ServiceCommand c: ServiceCommand.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        return null;
     }
 }
