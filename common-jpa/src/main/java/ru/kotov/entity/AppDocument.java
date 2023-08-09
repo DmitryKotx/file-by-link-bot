@@ -11,7 +11,6 @@ import lombok.*;
 @Entity
 @Table(name = "app_document")
 public class AppDocument {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
