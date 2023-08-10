@@ -8,7 +8,7 @@ import ru.kotov.entity.BinaryContent;
 import java.io.IOException;
 
 public interface FileService {
-    AppDocument getDocument(String id);
-    AppPhoto getPhoto(String id);
+    AppDocument getDocument(String hash);
+    AppPhoto getPhoto(String hash);
     FileSystemResource getFileSystemResource(BinaryContent binaryContent) throws IOException;
 }

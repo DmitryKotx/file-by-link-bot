@@ -17,6 +17,8 @@ import ru.kotov.entity.AppPhoto;
 import ru.kotov.entity.BinaryContent;
 import ru.kotov.exceptions.UploadFileException;
 import ru.kotov.service.FileService;
+import ru.kotov.service.enums.LinkType;
+import ru.kotov.utils.CryptoTool;
 
 
 import java.io.IOException;
@@ -34,14 +36,18 @@ public class FileServiceImpl implements FileService {
     private String fileInfoUri;
     @Value("${service.file_storage.uri}")
     private String fileStorageUri;
+    @Value("${link.address}")
+    private String linkAddress;
     private final AppPhotoDAO appPhotoDAO;
     private final AppDocumentDAO appDocumentDAO;
     private final BinaryContentDAO binaryContentDAO;
+    private final CryptoTool cryptoTool;
 
-    public FileServiceImpl(AppPhotoDAO appPhotoDAO, AppDocumentDAO appDocumentDAO, BinaryContentDAO binaryContentDAO) {
+    public FileServiceImpl(AppPhotoDAO appPhotoDAO, AppDocumentDAO appDocumentDAO, BinaryContentDAO binaryContentDAO, CryptoTool cryptoTool) {
         this.appPhotoDAO = appPhotoDAO;
         this.appDocumentDAO = appDocumentDAO;
         this.binaryContentDAO = binaryContentDAO;
+        this.cryptoTool = cryptoTool;
     }
 
     @Override
@@ -76,6 +82,8 @@ public class FileServiceImpl implements FileService {
             throw new UploadFileException("Bad response from telegram service: " + response);
         }
     }
+
+
 
     private AppPhoto buildTransientAppPhoto(PhotoSize telegramPhoto, BinaryContent persistentBinaryContent) {
         return AppPhoto.builder()
@@ -142,5 +150,10 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
             throw new UploadFileException(urlObj.toExternalForm(), e);
         }
+    }
+    @Override
+    public String generateLink(Long id, LinkType linkType) {
+        var hash = cryptoTool.hashOf(id);
+        return "http://" + linkAddress + "/" + linkType + "?id=" + hash;
     }
 }

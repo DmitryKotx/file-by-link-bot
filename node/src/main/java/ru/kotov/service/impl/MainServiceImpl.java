@@ -16,6 +16,7 @@ import ru.kotov.exceptions.UploadFileException;
 import ru.kotov.service.FileService;
 import ru.kotov.service.MainService;
 import ru.kotov.service.ProducerService;
+import ru.kotov.service.enums.LinkType;
 import ru.kotov.service.enums.ServiceCommand;
 
 import static ru.kotov.entity.enums.UserState.BASIC_STATE;
@@ -66,7 +67,8 @@ public class MainServiceImpl implements MainService {
         }
         try {
             AppDocument doc = fileService.processDoc(update.getMessage());
-            var answer = "Документ успешно загружен! Ссылка для скачивания: *ссылка*";
+            String link = fileService.generateLink(doc.getId(), LinkType.GET_DOC);
+            var answer = "Документ успешно загружен! Ссылка для скачивания: " + link;
             setAnswer(answer, chatId);
         } catch (UploadFileException ex) {
             log.error(ex);
@@ -88,7 +90,8 @@ public class MainServiceImpl implements MainService {
         }
         try {
             AppPhoto photo = fileService.processPhoto(update.getMessage());
-            var answer = "Фото успешно загружено! Ссылка для скачивания: *ссылка*";
+            String link = fileService.generateLink(photo.getId(), LinkType.GET_PHOTO);
+            var answer = "Фото успешно загружено! Ссылка для скачивания: " + link;
             setAnswer(answer, chatId);
         } catch (UploadFileException ex) {
             log.error(ex);

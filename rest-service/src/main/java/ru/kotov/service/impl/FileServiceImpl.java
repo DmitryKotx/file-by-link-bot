@@ -11,6 +11,7 @@ import ru.kotov.entity.AppDocument;
 import ru.kotov.entity.AppPhoto;
 import ru.kotov.entity.BinaryContent;
 import ru.kotov.service.FileService;
+import ru.kotov.utils.CryptoTool;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,15 +22,16 @@ import java.io.IOException;
 public class FileServiceImpl implements FileService {
     private final AppDocumentDAO appDocumentDAO;
     private final AppPhotoDAO appPhotoDAO;
+    private final CryptoTool cryptoTool;
     @Override
-    public AppDocument getDocument(String docId) {
-        var id = Long.parseLong(docId);
+    public AppDocument getDocument(String hash) {
+        var id = cryptoTool.idOf(hash);
         return appDocumentDAO.findById(id).orElse(null);
     }
 
     @Override
-    public AppPhoto getPhoto(String photoId) {
-        var id = Long.parseLong(photoId);
+    public AppPhoto getPhoto(String hash) {
+        var id = cryptoTool.idOf(hash);
         return appPhotoDAO.findById(id).orElse(null);
     }
 
