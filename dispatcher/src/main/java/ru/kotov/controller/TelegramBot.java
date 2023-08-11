@@ -14,10 +14,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramBot extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String botName;
-    private final UpdateController updateController;
-    public TelegramBot(@Value("${bot.token}")String botToken, UpdateController updateController) {
+    private final UpdateProcessor updateProcessor;
+    public TelegramBot(@Value("${bot.token}")String botToken, UpdateProcessor updateProcessor) {
         super(botToken);
-        this.updateController = updateController;
+        this.updateProcessor = updateProcessor;
     }
     @Override
     public String getBotUsername() {
@@ -26,11 +26,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @PostConstruct
     public void init() {
-        updateController.registerBot(this);
+        updateProcessor.registerBot(this);
     }
     @Override
     public void onUpdateReceived(Update update) {
-       updateController.processUpdate(update);
+       updateProcessor.processUpdate(update);
     }
     public void sendAnswerMessage(SendMessage message) {
         if(message != null) {

@@ -10,5 +10,4 @@ import java.io.IOException;
 public interface FileService {
     AppDocument getDocument(String hash);
     AppPhoto getPhoto(String hash);
-    FileSystemResource getFileSystemResource(BinaryContent binaryContent) throws IOException;
 }
