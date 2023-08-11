@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kotov.dao.RawDataDAO;
 import ru.kotov.entity.RawData;
 import ru.kotov.exceptions.UploadFileException;
+import ru.kotov.service.AppUserService;
 import ru.kotov.service.FileService;
 import ru.kotov.service.MainService;
 import ru.kotov.service.ProducerService;
@@ -30,6 +31,7 @@ public class MainServiceImpl implements MainService {
     public final ProducerService producerService;
     private final AppUserDAO appUserDAO;
     private final FileService fileService;
+    private final AppUserService appUserService;
     @Override
     public void processTextMessage(Update update) {
         saveRawData(update);
@@ -45,7 +47,7 @@ public class MainServiceImpl implements MainService {
         } else if(BASIC_STATE.equals(userState)) {
             output = processServiceCommand(appUser, text);
         } else if(WAIT_FOR_EMAIL_STATE.equals(userState)) {
-
+            output = appUserService.setEmail(appUser, text);
         }else {
             log.error("Unknown user state: " + userState);
             output = "Неизвестная ошибка! Введите /cancel и попробуйте снова.";
@@ -123,7 +125,7 @@ public class MainServiceImpl implements MainService {
     private String processServiceCommand(AppUser appUser, String text) {
         var serviceCommand = ServiceCommand.fromValue(text);
         if(REGISTRATION.equals(serviceCommand)) {
-            return "Временно недоступно";
+            return appUserService.registerUser(appUser);
         } else if(HELP.equals(serviceCommand)) {
             return help();
         } else if(START.equals(serviceCommand)) {
@@ -154,7 +156,7 @@ public class MainServiceImpl implements MainService {
                     .username(telegramUser.getUserName())
                     .firstName(telegramUser.getFirstName())
                     .lastName(telegramUser.getLastName())
-                    .isActive(true)
+                    .isActive(false)
                     .state(BASIC_STATE)
                     .build();
             return appUserDAO.save(transientAppUser);
