@@ -1,4 +1,4 @@
-package ru.kotov.comtroller;
+package ru.kotov.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
