@@ -14,7 +14,7 @@
 ### Стек: ###
 
 backend: Java, Spring (Boot, Data JPA), TelegramApi, RabbitMQ, PostgreSQL, Json, Lombok  
-data base: PostgreSQL  
+database: PostgreSQL  
 IDE: IntelliJ IDEA  
 build system: Maven
 
