@@ -13,9 +13,8 @@
 
 ### Стек: ###
 
-backend: Java, Spring Framework (Spring Boot, Spring Data Spring JPA, Spring Web, Spring Security)  
-frontend: JavaScript, React.js  
-data base: MySQL  
+backend: Java, Spring (Boot, Data JPA), TelegramApi, RabbitMQ, PostgreSQL, Json, Lombok  
+data base: PostgreSQL  
 IDE: IntelliJ IDEA  
 build system: Maven
 
